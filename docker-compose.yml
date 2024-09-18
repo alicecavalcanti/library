@@ -1,0 +1,15 @@
+services:
+  db:
+    image: mongodb/mongodb-community-server:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+
