@@ -1,17 +1,13 @@
 package com.challenge.library.model
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.io.Serializable
 
-@Document(collection= "Books")
-data class Books(
+@Document(collection= "book")
+data class Book(
     @Id
-    @JsonSerialize(using = ToStringSerializer::class)
-    var id: ObjectId,
+    var id: String?=null,
     var titulo: String,
     var resumo: String,
     var autor:String,
@@ -19,5 +15,13 @@ data class Books(
     var categoria: List<String>,
     val notas: Double?= null,
     val resenhas: String?=null
+): Serializable{
 
-) : Serializable
+    fun updateWith(titulo: String, resumo: String, autor: String, ISBN: String, categoria: List<String>){
+        this.titulo = titulo
+        this.resumo = resumo
+        this.autor = autor
+        this.ISBN = ISBN
+        this.categoria = categoria
+    }
+}

@@ -3,7 +3,7 @@ package com.challenge.library.model
 import org.bson.types.ObjectId
 
  object BooksTest{
-    fun build() = Books(
+    fun build() = Book(
         id = ObjectId(),
         titulo = "patolino",
         resumo = "editdaldsakdlsakda dfkmdmfkdsmd fdkmfdsm fdksmfdsmf dsamkdsmakdmksamdks ",

@@ -1,11 +1,11 @@
 package com.challenge.library.service
 
-import com.challenge.library.controller.dto.BookFormDTO
-import com.challenge.library.controller.dto.BookUpdateFormDTO
-import com.challenge.library.mapper.BooksFormMapper
-import com.challenge.library.model.Books
+import com.challenge.library.controller.dto.BookRequestDTO
+import com.challenge.library.controller.dto.BookUpdateRequestDTO
+import com.challenge.library.mapper.BooksRequestMapper
+import com.challenge.library.model.Book
 import com.challenge.library.repository.BookRepository
-import org.bson.types.ObjectId
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
@@ -13,67 +13,49 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class BookManagementService(
+class BookManagementService @Autowired constructor(
     private val bookRepository: BookRepository,
-    private val booksFormMapper: BooksFormMapper
-){
+    private val booksRequestMapper: BooksRequestMapper
+) {
 
-    @Cacheable(cacheNames = ["browseBooksByTitle"])
+    @Cacheable(cacheNames = ["book"])
     fun consultBook(
-        titulo: String,
-        pagination: Pageable
-    ): Page<Books>{
-        val searchEdit = titulo.lowercase()
-        return bookRepository.findAllByTitulo(searchEdit, pagination)
-    }
-
-    @Cacheable(cacheNames = ["Books"])
-    fun consultsBookUserMember(
         search: String,
         pagination: Pageable
-    ): Page<Books> {
-        val searchEdit = search.lowercase()
-        if(!bookRepository.findAllByTitulo(searchEdit, pagination).isEmpty()){
-            return bookRepository.findAllByTitulo(searchEdit,pagination)
-        }else if (!bookRepository.findAllByAutor(searchEdit,pagination).isEmpty()){
-            return bookRepository.findAllByAutor(searchEdit, pagination)
-        }else if(!bookRepository.findAllByCategoria(searchEdit, pagination).isEmpty()){
-            return bookRepository.findAllByCategoria(searchEdit, pagination)
-        }else{
-            return bookRepository.findAllByISBN(searchEdit, pagination)
-        }
+    ): Page<Book> {
+        return bookRepository.findBook(search, pagination)
     }
 
-    @CacheEvict(cacheNames = ["browseBooksByTitle", "Books"], allEntries = true)
+    @CacheEvict(cacheNames = ["book"], allEntries = true)
     fun registerBook(
-        bookForm: BookFormDTO
-    ): Books{
-        val book = booksFormMapper.map(bookForm)
+        bookRequestDTO: BookRequestDTO
+    ): Book {
+        val book = booksRequestMapper.map(bookRequestDTO)
         bookRepository.save(book)
 
         return book
     }
 
-    @CacheEvict(cacheNames = ["browseBooksByTitle", "Books"], allEntries = true)
+    @CacheEvict(cacheNames = ["book"], allEntries = true)
     fun editBook(
-        bookForm: BookUpdateFormDTO
-    ): Books{
-        var updatedBook = bookRepository.findById(bookForm.id).orElseThrow()
-        updatedBook.titulo = bookForm.titulo
-        updatedBook.resumo = bookForm.resumo
-        updatedBook.autor = bookForm.autor
-        updatedBook.ISBN = bookForm.ISBN
-        updatedBook.categoria = bookForm.categoria
-
-        bookRepository.save(updatedBook)
-
-        return updatedBook
+        bookRequestDTO: BookUpdateRequestDTO
+    ): Book {
+        val book = bookRepository.findById(bookRequestDTO.id).orElseThrow()
+        book.updateWith(
+            bookRequestDTO.titulo,
+            bookRequestDTO.resumo,
+            bookRequestDTO.autor,
+            bookRequestDTO.ISBN,
+            bookRequestDTO.categoria
+        )
+        bookRepository.save(book)
+        return book
     }
 
-    @CacheEvict(cacheNames = ["browseBooksByTitle", "Books"], allEntries = true)
+    @CacheEvict(cacheNames = ["book"], allEntries = true)
     fun delete(
-        id: ObjectId
-    ){
+        id: String
+    ) {
         bookRepository.deleteById(id)
     }
 }

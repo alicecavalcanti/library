@@ -1,17 +1,12 @@
 package com.challenge.library.controller.dto
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
-import org.bson.types.ObjectId
 
-class BookUpdateFormDTO (
-    @JsonSerialize(using = ToStringSerializer::class)
-    val id: ObjectId,
+class BookRequestDTO (
     @field:NotBlank
-    @Size(min=1, max = 100)
+    @field:Size(min=1, max = 100)
     val titulo: String,
 
     @field:NotBlank
@@ -22,11 +17,11 @@ class BookUpdateFormDTO (
     @field:Size(min=5, max=30)
     val autor:String,
 
-    @NotBlank
+    @field:NotBlank
     @field:Size(min=13, max= 13 )
     val ISBN: String,
 
     @field:NotEmpty
-    @field:Size(min = 1, max = 100)
+    @field:Size(min = 2, max = 100)
     val categoria: List<String>
 )
