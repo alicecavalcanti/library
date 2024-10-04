@@ -12,7 +12,7 @@ class BooksRequestMapper : Mapper<BookRequestDTO, Book>{
             resumo = t.resumo,
             autor = t.autor,
             categoria = t.categoria,
-            ISBN = t.ISBN
+            isbn = t.isbn
         )
     }
 }

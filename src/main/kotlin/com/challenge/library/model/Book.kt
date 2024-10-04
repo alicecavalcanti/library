@@ -11,18 +11,17 @@ data class Book(
     var titulo: String,
     var resumo: String,
     var autor:String,
-    var ISBN: String,
+    var isbn: String,
     var categoria: List<String>,
     val notas: Double?= null,
-    val resenhas: String?=null,
-    val unauthorizedMessage: String = "unauthorized user"
+    val resenhas: String?=null
 ): Serializable{
 
     fun updateWith(titulo: String, resumo: String, autor: String, ISBN: String, categoria: List<String>){
         this.titulo = titulo
         this.resumo = resumo
         this.autor = autor
-        this.ISBN = ISBN
+        this.isbn = isbn
         this.categoria = categoria
     }
 }

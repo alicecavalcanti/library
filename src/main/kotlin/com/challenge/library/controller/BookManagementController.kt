@@ -20,14 +20,14 @@ import org.springframework.web.util.UriComponentsBuilder
 class BookManagementController(
     private val bookManagementService: BookManagementService,
 ) {
-    @GetMapping("/catalogo")
+    @GetMapping("/catalog")
     fun catalogoLivros(
         @PageableDefault pagination: Pageable
     ):Page<Book>{
         return bookManagementService.listAll(pagination)
     }
 
-    @GetMapping
+    @GetMapping("/search")
     fun consultBook(
         @RequestParam search: String,
         @PageableDefault pagination: Pageable
@@ -37,33 +37,28 @@ class BookManagementController(
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CONFLICT)
     fun registerBook(
         @RequestBody @Valid bookForm: BookRequestDTO,
         @RequestHeader token: String,
         uriBuilder: UriComponentsBuilder,
-    ) : ResponseEntity<String>{
+    ) : ResponseEntity<Book>{
 
-        val registeredBookTrueOrFalse = bookManagementService.registerBook(bookForm, token)
-
-        if (registeredBookTrueOrFalse){
-            return ResponseEntity.status(401).body("")
-        }
+        val registeredBook = bookManagementService.registerBook(bookForm, token)
 
         var uri = uriBuilder.path("/books").build().toUri()
 
-        return ResponseEntity.created(uri).body("")
+        return ResponseEntity.created(uri).body(registeredBook)
     }
 
     @PutMapping
+    @ResponseStatus(HttpStatus.CONFLICT)
     fun editBook(
         @RequestBody @Valid bookRequestDTO: BookUpdateRequestDTO,
         @RequestHeader token: String
-    ): ResponseEntity<String> {
-        val editYesOrNot= bookManagementService.editBook(bookRequestDTO, token)
-        if(editYesOrNot){
-           return ResponseEntity.status(200).body("")
-        }
-        return ResponseEntity.status(401).body("")
+    ): Book{
+        return bookManagementService.editBook(bookRequestDTO, token)
+
     }
 
     @DeleteMapping("/{id}")
@@ -71,11 +66,7 @@ class BookManagementController(
     fun deleteBook(
         @PathVariable id: String,
         @RequestHeader token: String
-    ): ResponseEntity<String>{
-       val deleteTrueOrFalse= bookManagementService.delete(id, token)
-       if(deleteTrueOrFalse){
-           return ResponseEntity.status(204).body("")
-       }
-        return ResponseEntity.status(401).body("")
+    ){
+        return bookManagementService.delete(id, token)
     }
 }
