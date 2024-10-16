@@ -1,5 +1,5 @@
 package com.challenge.library.model
 
 enum class LoanStatus {
-    REQUESTED, APPROVED, RETURNED, CHECKEDOUT
+    REQUESTED_LOAN, REQUESTED_RETURN, APPROVED, RETURNED, CHECKED_OUT
 }

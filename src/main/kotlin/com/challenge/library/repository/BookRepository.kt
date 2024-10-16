@@ -1,8 +1,11 @@
 package com.challenge.library.repository
 
+import com.challenge.library.controller.dto.AverageBookGradesDTO
+import com.challenge.library.controller.dto.LoanAmountCategoryDTO
 import com.challenge.library.model.Book
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 import org.springframework.stereotype.Repository
@@ -10,7 +13,25 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface BookRepository : MongoRepository<Book, String>{
+
     @Query("{'\$or':[ {'titulo': ?0, {\$regex: /^ABC/i} }, {'autor': ?0,  {\$regex: /^ABC/i}}, {'ISBN': ?0}, {'categoria': ?0, }, {\$regex:/^ABC/i} ] }")
     fun findBook(search: String, pagination: Pageable): Page<Book>
+
+    @Aggregation(
+        "{\$unwind: '\$categoria'}",
+        "{\$group: { _id: '\$categoria', totalLoans: { \$sum: 1 } } }",
+        "{\$project: {category: '\$_id', totalLoans: '\$totalLoans', _id:0}}"
+    )
+    fun findAmountLoansCategory(): List<LoanAmountCategoryDTO>
+
+    @Aggregation(
+    "{\$unwind: '\$notas' }",
+    "{\$group: { _id: '\$_id', gradeAverage:{\$avg: '\$notas'}}}",
+    "{\$sort: {gradeAverage:-1}}",
+    "{\$limit: 20}",
+    "{\$project: {idBook: '\$_id', gradeAverage: '\$gradeAverage', _id:0 }}"
+    )
+    fun findBestBookNotes():List<AverageBookGradesDTO>
+
 
 }

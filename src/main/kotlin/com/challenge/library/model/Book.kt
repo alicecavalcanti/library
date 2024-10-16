@@ -13,8 +13,8 @@ data class Book(
     var autor:String,
     var isbn: String,
     var categoria: List<String>,
-    val notas: Double?= null,
-    val resenhas: String?=null
+    val notas: MutableList<Int> = mutableListOf(),
+    var resenhas: MutableList<String> = mutableListOf()
 ): Serializable{
 
     fun updateWith(titulo: String, resumo: String, autor: String, ISBN: String, categoria: List<String>){

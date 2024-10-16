@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @Component
 @ResponseStatus(
     HttpStatus.CONFLICT,
-    reason = "O status do empréstimo do livro não está como CHECKEDOUT, por isso a requisição não pode ser feita"
+    reason = "O status do empréstimo do livro não está como CHECKED_OUT, por isso a requisição não pode ser feita"
 )
-class StatusNotCheckedOutException(
+class StatusCheckedOutException(
    override val message: String= "\$reason"
 ):RuntimeException()

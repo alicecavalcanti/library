@@ -1,11 +1,10 @@
 package com.challenge.library.controller
 
+import com.challenge.library.controller.dto.BookFeedbackDTO
 import com.challenge.library.controller.dto.BookRequestDTO
 import com.challenge.library.controller.dto.BookUpdateRequestDTO
-import com.challenge.library.controller.dto.UserRequestDTO
 import com.challenge.library.model.Book
-import com.challenge.library.repository.BookRepository
-import com.challenge.library.service.BookManagementService
+import com.challenge.library.service.BookService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -17,34 +16,32 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/book")
-class BookManagementController(
-    private val bookManagementService: BookManagementService,
+class BookController(
+    private val bookService: BookService,
 ) {
     @GetMapping("/catalog")
-    fun catalogoLivros(
+    fun listAllBooksLibrary(
         @PageableDefault pagination: Pageable
     ):Page<Book>{
-        return bookManagementService.listAll(pagination)
+        return bookService.listAllBooksLibrary(pagination)
     }
 
-    @GetMapping("/search")
+    @GetMapping()
     fun consultBook(
         @RequestParam search: String,
         @PageableDefault pagination: Pageable
     ): Page<Book>{
-        val book = bookManagementService.consultBook(search, pagination)
+        val book = bookService.consultBook(search, pagination)
         return book
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CONFLICT)
     fun registerBook(
         @RequestBody @Valid bookForm: BookRequestDTO,
-        @RequestHeader token: String,
         uriBuilder: UriComponentsBuilder,
     ) : ResponseEntity<Book>{
 
-        val registeredBook = bookManagementService.registerBook(bookForm, token)
+        val registeredBook = bookService.registerBook(bookForm)
 
         var uri = uriBuilder.path("/books").build().toUri()
 
@@ -52,21 +49,24 @@ class BookManagementController(
     }
 
     @PutMapping
-    @ResponseStatus(HttpStatus.CONFLICT)
     fun editBook(
         @RequestBody @Valid bookRequestDTO: BookUpdateRequestDTO,
-        @RequestHeader token: String
     ): Book{
-        return bookManagementService.editBook(bookRequestDTO, token)
+        return bookService.editBook(bookRequestDTO)
 
     }
 
-    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
     fun deleteBook(
         @PathVariable id: String,
-        @RequestHeader token: String
     ){
-        return bookManagementService.delete(id, token)
+        bookService.delete(id)
     }
+
+    @PostMapping("/feedback-book")
+    fun feedbackBookUser(@RequestBody @Valid bookFeedbackDTO: BookFeedbackDTO): Book {
+        return bookService.feedbackBookUser(bookFeedbackDTO)
+    }
+
 }

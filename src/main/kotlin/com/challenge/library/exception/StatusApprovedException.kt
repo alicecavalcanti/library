@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @ResponseStatus(
     HttpStatus.CONFLICT,
     reason = "O status do empréstimo do livro não está como APPROVED, por isso a requisição não pode ser feita")
-class StatusNotApprovedException(
+class StatusApprovedException(
    override val message: String = "\$reason"
 ):RuntimeException()

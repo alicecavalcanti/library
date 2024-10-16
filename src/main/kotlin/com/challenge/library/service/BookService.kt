@@ -1,11 +1,9 @@
 package com.challenge.library.service
 
-import com.challenge.library.controller.dto.BookRequestDTO
-import com.challenge.library.controller.dto.BookUpdateRequestDTO
-import com.challenge.library.exception.UserNotAllowedException
+import com.challenge.library.controller.dto.*
+import com.challenge.library.exception.BookNotFoundException
 import com.challenge.library.mapper.BooksRequestMapper
 import com.challenge.library.model.Book
-import com.challenge.library.model.Token
 import com.challenge.library.repository.BookRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
@@ -16,17 +14,16 @@ import org.springframework.stereotype.Service
 
 
 @Service
-class BookManagementService @Autowired constructor(
+class BookService @Autowired constructor(
     private val bookRepository: BookRepository,
     private val booksRequestMapper: BooksRequestMapper,
-    private val tokenValue: Token,
-    private val userNotAllowedException: UserNotAllowedException
-) {
+){
+
     @Cacheable(cacheNames = ["list_book"])
-    fun listAll(pagination: Pageable): Page<Book> {
+    fun listAllBooksLibrary(pagination: Pageable): Page<Book> {
         return bookRepository.findAll(pagination)
     }
-    @Cacheable(cacheNames = ["book"])
+   // @Cacheable(cacheNames = ["book"])
     fun consultBook(
         search: String,
         pagination: Pageable
@@ -34,14 +31,14 @@ class BookManagementService @Autowired constructor(
         return bookRepository.findBook(search, pagination)
     }
 
+    fun findBookById(id: String): Book{
+        return bookRepository.findById(id).orElseThrow{BookNotFoundException()}
+    }
+
     @CacheEvict(cacheNames = ["book_register"], allEntries = true)
     fun registerBook(
         bookRequestDTO: BookRequestDTO,
-        token: String
     ): Book {
-        if(token.equals(tokenValue.TOKEN_MEMBER)){
-            throw userNotAllowedException
-        }
         val book = booksRequestMapper.map(bookRequestDTO)
         bookRepository.save(book)
         return book
@@ -50,14 +47,11 @@ class BookManagementService @Autowired constructor(
     @CacheEvict(cacheNames = ["book_edit"], allEntries = true)
     fun editBook(
         bookRequestDTO: BookUpdateRequestDTO,
-        token: String
     ): Book{
-        if(token.equals(tokenValue.TOKEN_MEMBER)){
-          throw userNotAllowedException
-        }
-        val book = bookRepository.findById(bookRequestDTO.id).orElseThrow()
+
+        val book = findBookById(bookRequestDTO.id)
         book.updateWith(
-                bookRequestDTO.titulo,
+        bookRequestDTO.titulo,
         bookRequestDTO.resumo,
         bookRequestDTO.autor,
         bookRequestDTO.isbn,
@@ -71,14 +65,24 @@ class BookManagementService @Autowired constructor(
     @CacheEvict(cacheNames = ["book_delete"], allEntries = true)
     fun delete(
         id: String,
-        token: String
     ){
-        if (token.equals(tokenValue.TOKEN_MEMBER)){
-           throw userNotAllowedException
-        }
         bookRepository.deleteById(id)
-
     }
 
+    fun feedbackBookUser(
+        bookFeedbackDTO: BookFeedbackDTO
+    ): Book{
+        val book = findBookById(bookFeedbackDTO.idBook)
+        book.resenhas.add(bookFeedbackDTO.resenha)
+        book.notas.add(bookFeedbackDTO.nota)
+        return bookRepository.save(book)
+    }
 
+    fun amountLoansCategory(): List<LoanAmountCategoryDTO>{
+       return bookRepository.findAmountLoansCategory()
+    }
+
+    fun bestBookNotes(): List<AverageBookGradesDTO>{
+        return bookRepository.findBestBookNotes()
+    }
 }
