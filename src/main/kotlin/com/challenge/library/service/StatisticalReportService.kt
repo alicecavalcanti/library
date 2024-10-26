@@ -19,7 +19,7 @@ class StatisticalReportService(
             totalNumberQuantityEachTypeUsers= userService.totalNumberUsers(),
             LateAndOnTimeReturns = loanService.lateAndOnTimeReturns(),
             fiveMostBorrowedBooks = loanService.fiveMostBorrowedBooks(),
-            amountLoansCategory= bookService.amountLoansCategory(),
+            amountLoansCategory= loanService.amountLoansCategory(),
             bestBookNotes = bookService.bestBookNotes(),
             newUsersLastMonth= userService.newUsersLastMonth()
 

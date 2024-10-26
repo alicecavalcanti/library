@@ -7,7 +7,7 @@ object BooksFormTest {
         titulo = "Livro de teste2",
         resumo = "editdaldsakdlsakda dfkmdmfkdsmd fdkmfdsm fdksmfdsmf dsamkdsmakdmksamdks ",
         autor = "davi diego",
-        ISBN = "1234567891234",
+        isbn = "1234567891234",
         categoria = mutableListOf("comédia", "jogos")
     )
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalTime
 
 
 @Service
@@ -43,8 +44,7 @@ class LoanService (
 
         val listLoansFound = loanRepository.findAllByIdBook(book.id)
 
-        listLoansFound.map { it.checkIfStatusNotValid(LoanStatus.RETURNED) }
-            //TODO: fazer um comportamento de validação de status para chamar em todos os outros metódos que usam esse comportamento
+        listLoansFound.any { it.isLoanReturned() } .run { throw BookAlreadyRequestedException() }
 
         val loanCreate= loanRequestMapper.map(loanBookDTO)
 
@@ -95,15 +95,14 @@ class LoanService (
 
         loanFound.status = LoanStatus.REQUESTED_RETURN
         loanFound.userReturnDate = LocalDate.now()
-        // TODO: adicionar os comportamentos do model em suas classes em vez dos serviços.
-
         loanRepository.save(loanFound)
 
         return loanFound
     }
     fun findAllLoanMonth(): List<Loan>{
-        val lastMonth= LocalDate.now().minusMonths(1)
-        return loanRepository.findAllLoanMonth(lastMonth.monthValue)
+        val end = LocalDate.now().atTime(LocalTime.MAX)
+        val start = LocalDate.now().atStartOfDay().minusMonths(1)
+        return loanRepository.findLoansByPeriod(start, end)
     }
 
     fun fiveMostBorrowedBooks(): List<FiveMostBorrowedBooksDTO>{
@@ -112,6 +111,9 @@ class LoanService (
 
     fun lateAndOnTimeReturns(): List<LateAndOnTimeReturnsDTO>{
         return loanRepository.findLateAndOnTimeReturns()
+    }
+    fun amountLoansCategory(): List<LoanAmountCategoryDTO>{
+        return loanRepository.findAmountLoansCategory()
     }
 
 

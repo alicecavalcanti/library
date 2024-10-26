@@ -78,9 +78,6 @@ class BookService @Autowired constructor(
         return bookRepository.save(book)
     }
 
-    fun amountLoansCategory(): List<LoanAmountCategoryDTO>{
-       return bookRepository.findAmountLoansCategory()
-    }
 
     fun bestBookNotes(): List<AverageBookGradesDTO>{
         return bookRepository.findBestBookNotes()

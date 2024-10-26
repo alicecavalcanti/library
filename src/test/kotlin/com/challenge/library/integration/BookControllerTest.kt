@@ -4,6 +4,7 @@ package com.challenge.library.integration
 import com.challenge.library.configuration.ConfigurationContainerizedRedisTest
 import com.challenge.library.model.BooksFormTest
 import com.challenge.library.model.BooksUpdateFormTest
+
 import com.challenge.library.service.BookService
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper

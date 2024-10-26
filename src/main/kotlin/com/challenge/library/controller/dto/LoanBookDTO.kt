@@ -6,5 +6,4 @@ data class LoanBookDTO (
     val idUser: String,
     val idBook: String,
     val expectedReturnDate: LocalDate
-
 )

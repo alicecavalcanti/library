@@ -17,12 +17,6 @@ interface BookRepository : MongoRepository<Book, String>{
     @Query("{'\$or':[ {'titulo': ?0, {\$regex: /^ABC/i} }, {'autor': ?0,  {\$regex: /^ABC/i}}, {'ISBN': ?0}, {'categoria': ?0, }, {\$regex:/^ABC/i} ] }")
     fun findBook(search: String, pagination: Pageable): Page<Book>
 
-    @Aggregation(
-        "{\$unwind: '\$categoria'}",
-        "{\$group: { _id: '\$categoria', totalLoans: { \$sum: 1 } } }",
-        "{\$project: {category: '\$_id', totalLoans: '\$totalLoans', _id:0}}"
-    )
-    fun findAmountLoansCategory(): List<LoanAmountCategoryDTO>
 
     @Aggregation(
     "{\$unwind: '\$notas' }",

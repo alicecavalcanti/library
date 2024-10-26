@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus
 
 @Component
 @ResponseStatus(HttpStatus.CONFLICT, reason= "Não pode ser feita a solicitação de empréstimo, porque este livro já foi solicitado")
-class BookRequestedException (
-    override val message: String = "\$reason"
+class BookAlreadyRequestedException (
+    override val message: String? = null
 ): RuntimeException()
