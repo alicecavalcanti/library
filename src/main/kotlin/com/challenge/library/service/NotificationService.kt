@@ -23,16 +23,13 @@ class NotificationService(
         val borrowedBook = bookService.findBookById(loan.idBook)
         val DELAY_MESSAGE= "A entrega do livro '${borrowedBook.titulo}' está atrasada!"
 
-        val date = LocalDate.of(2024,10,12)
-
-        if(date.isBefore(loan.expectedReturnDate)){
-            throw BookNotLateException()
-        }
+        if(loan.isReturnOnTime(LocalDate.now())) throw BookNotLateException()
 
         val newNotification = Notification(
             idUser = loan.idUser,
             mensagem = DELAY_MESSAGE
         )
+
         return notificationRepository.save(newNotification)
     }
 }
