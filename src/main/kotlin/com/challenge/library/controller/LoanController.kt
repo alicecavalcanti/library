@@ -15,7 +15,6 @@ import org.springframework.web.util.UriComponentsBuilder
 class LoanController(
     private val loanService: LoanService,
     private val statisticalReportService: StatisticalReportService
-
 ){
     @GetMapping("/list")
     fun listAllLibraryLoans(
@@ -25,7 +24,7 @@ class LoanController(
     }
 
     @GetMapping("/list/{idUser}")
-    fun ListUserBookLoan(
+    fun listUserBookLoan(
         @PathVariable idUser: String,
         pagination: Pageable
     ): Page<Loan>?{
@@ -41,7 +40,7 @@ class LoanController(
 
         val createLoan= loanService.registerLoad(loan)
 
-        val uri = uriComponent.path("/loan").build().toUri()
+        val uri = uriComponent.path("/register").build().toUri()
 
         return ResponseEntity.created(uri).body(createLoan)
     }
@@ -69,7 +68,7 @@ class LoanController(
     ): ResponseEntity<Loan>{
         return ResponseEntity
             .status(200)
-            .body(loanService.grabBook(idLoan))
+            .body(loanService.grabLoanBook(idLoan))
 
     }
 
