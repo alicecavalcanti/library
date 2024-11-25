@@ -10,14 +10,11 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @DataMongoTest
 @Testcontainers
 abstract class AbstractContainerizedMongoTest {
-
-    companion object{
+    companion object {
         @JvmStatic
         @Container
         @ServiceConnection
         var mongoDBContainer = MongoDBContainer("mongo:latest")
             .withExposedPorts(27017)
     }
-
-
 }
