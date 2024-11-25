@@ -2,7 +2,7 @@ package com.challenge.library.service
 
 import com.challenge.library.controller.dto.*
 import com.challenge.library.exception.BookNotFoundException
-import com.challenge.library.mapper.BooksRequestMapper
+import com.challenge.library.mapper.BookRequestMapper
 import com.challenge.library.model.Book
 import com.challenge.library.repository.BookRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,14 +16,15 @@ import org.springframework.stereotype.Service
 @Service
 class BookService @Autowired constructor(
     private val bookRepository: BookRepository,
-    private val booksRequestMapper: BooksRequestMapper,
+    private val bookRequestMapper: BookRequestMapper,
 ){
+
 
     @Cacheable(cacheNames = ["list_book"])
     fun listAllBooksLibrary(pagination: Pageable): Page<Book> {
         return bookRepository.findAll(pagination)
     }
-   // @Cacheable(cacheNames = ["book"])
+    // @Cacheable(cacheNames = ["book"])
     fun consultBook(
         search: String,
         pagination: Pageable
@@ -39,9 +40,8 @@ class BookService @Autowired constructor(
     fun registerBook(
         bookRequestDTO: BookRequestDTO,
     ): Book {
-        val book = booksRequestMapper.map(bookRequestDTO)
-        bookRepository.save(book)
-        return book
+        val book = bookRequestMapper.map(bookRequestDTO)
+        return bookRepository.save(book)
     }
 
     @CacheEvict(cacheNames = ["book_edit"], allEntries = true)
