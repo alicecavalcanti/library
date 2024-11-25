@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface BookRepository : MongoRepository<Book, String>{
 
-    @Query("{'\$or':[ {'titulo': ?0, {\$regex: /^ABC/i} }, {'autor': ?0,  {\$regex: /^ABC/i}}, {'ISBN': ?0}, {'categoria': ?0, }, {\$regex:/^ABC/i} ] }")
+    @Query("{'\$or': [ {'titulo': {'\$regex': ?0, '\$options': 'i'}}, {'autor': {'\$regex': ?0, '\$options': 'i'}}, {'isbn': ?0}, {'categoria': ?0} ] }")
     fun findBook(search: String, pagination: Pageable): Page<Book>
 
 
@@ -22,7 +22,7 @@ interface BookRepository : MongoRepository<Book, String>{
     "{\$unwind: '\$notas' }",
     "{\$group: { _id: '\$_id', gradeAverage:{\$avg: '\$notas'}}}",
     "{\$sort: {gradeAverage:-1}}",
-    "{\$limit: 20}",
+    "{\$limit: 10}",
     "{\$project: {idBook: '\$_id', gradeAverage: '\$gradeAverage', _id:0 }}"
     )
     fun findBestBookNotes():List<AverageBookGradesDTO>
