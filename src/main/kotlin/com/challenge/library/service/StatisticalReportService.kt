@@ -17,12 +17,10 @@ class StatisticalReportService(
         val statisticalReport = StatisticalReport(
             totalLoansMonth= loanService.findAllLoanMonth(),
             totalNumberQuantityEachTypeUsers= userService.totalNumberUsers(),
-            LateAndOnTimeReturns = loanService.lateAndOnTimeReturns(),
+            lateAndOnTimeReturns = loanService.lateAndOnTimeReturns(),
             fiveMostBorrowedBooks = loanService.fiveMostBorrowedBooks(),
-            amountLoansCategory= loanService.amountLoansCategory(),
             bestBookNotes = bookService.bestBookNotes(),
             newUsersLastMonth= userService.newUsersLastMonth()
-
         )
         return statisticalReportRepository.save(statisticalReport)
     }
