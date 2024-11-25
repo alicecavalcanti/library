@@ -1,6 +1,6 @@
 package com.challenge.library.controller.dto
 
-class FiveMostBorrowedBooksDTO (
+class ThreeMostBorrowedBooksDTO (
     val idBook: String,
     val totalLoans: Int
 )
