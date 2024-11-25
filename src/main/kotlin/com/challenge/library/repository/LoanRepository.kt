@@ -1,8 +1,6 @@
 package com.challenge.library.repository
 
-import com.challenge.library.controller.dto.FiveMostBorrowedBooksDTO
-import com.challenge.library.controller.dto.LateAndOnTimeReturnsDTO
-import com.challenge.library.controller.dto.LoanAmountCategoryDTO
+import com.challenge.library.controller.dto.ThreeMostBorrowedBooksDTO
 import com.challenge.library.model.Loan
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -20,42 +18,17 @@ interface LoanRepository: MongoRepository<Loan, String> {
     @Query("{'status': 'REQUESTED_LOAN'}")
     fun findLoans(pagination: Pageable): Page<Loan>
 
-    @Query("{ expectedReturnDate: { \$gte: ?0, \$lte: ?1 } }")
+    @Query("{'loanDate': { \$gte: ?0, \$lte: ?1 } }")
     fun findLoansByPeriod(start: LocalDateTime, end: LocalDateTime): List<Loan>
 
     @Aggregation(
         "{ \$group: { _id: '\$idBook', totalLoans: { \$sum: 1 } } }",
         "{ \$sort: { totalLoans: -1 } }",
-        "{ \$limit: 5 }",
+        "{ \$limit: 3 }",
         "{ \$project: { idBook : '\$_id', totalLoans: \$totalLoans } }"
     )
-    fun fiveMostBorrowedBooks(): List<FiveMostBorrowedBooksDTO>
+    fun threeMostBorrowedBooks(): List<ThreeMostBorrowedBooksDTO>
 
-    @Aggregation(
-        "{\$unwind: '\$categoria'}",
-        "{\$group: { _id: '\$categoria', totalLoans: { \$sum: 1 } } }",
-        "{\$sort: {totalLoans:-1}}",
-        "{\$project: {category: '\$_id', totalLoans: '\$totalLoans', _id:0}}"
-    )
-    fun findAmountLoansCategory(): List<LoanAmountCategoryDTO>
-    @Aggregation(
-        "{\$match: {status: 'RETURNED' }}",
-        "{\$addFields: {returns: {\$lte: ['\$userReturnDate', '\$expectedReturnDate'] }}}",
-        "{\$group: {" +
-
-                "_id: '\$idBook' ," +
-
-                "loanOnTime: {\$sum: {\$cond: {" +
-                "if: {\$eq: ['\$returns', true]}, then:1, else:0 " +
-                "}}}," +
-
-                "lateLoan: {\$sum: { \$cond: {" +
-                "if: {\$eq: ['\$returns', false]}, then:1, else:0" +
-                "}}}" +
-        "}}",
-        "{\$project: {idBook: '\$_id', loanOnTime: '\$loanOnTime', lateLoan: '\$lateLoan' }}"
-    )
-    fun findLateAndOnTimeReturns(): List<LateAndOnTimeReturnsDTO>
-
-
+    @Query("{'status': 'RETURNED'}")
+    fun findAllLoansReturns(): List<Loan>
 }
