@@ -43,13 +43,12 @@ class UserService(
 
 
     fun totalNumberUsers(): QuantityEachTypeUsers {
-       val totalNumberUsers = QuantityEachTypeUsers(
+       return QuantityEachTypeUsers(
            totalUser = userRepository.findAll().size,
            adminUser = userRepository.findByRoles(listOf(Roles.ADMIN)).size,
            libraryUser = userRepository.findByRoles(listOf(Roles.LIBRARY)).size,
            memberUser = userRepository.findByRoles(listOf(Roles.MEMBER)).size
        )
-        return totalNumberUsers
     }
 
     fun newUsersLastMonth():UserGrowthDTO{
