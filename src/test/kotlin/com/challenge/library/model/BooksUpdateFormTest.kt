@@ -5,11 +5,12 @@ import org.bson.types.ObjectId
 
 object BooksUpdateFormTest {
     fun build() = BookUpdateRequestDTO(
-        id = ObjectId("66eae95d7225161e6c7ae802"),
+        id = "id",
         titulo = "patolino22",
         resumo = "editdaldsakdlsakda dfkmdmfkdsmd fdkmfdsm fdksmfdsmf dsamkdsmakdmksamdks ",
         autor = "davi diego",
-        ISBN = "1234567891234",
+        isbn = "1234567891234",
         categoria = mutableListOf("comédia", "jogos")
+
     )
 }

@@ -4,7 +4,8 @@ package com.challenge.library.integration
 import com.challenge.library.configuration.ConfigurationContainerizedRedisTest
 import com.challenge.library.model.BooksFormTest
 import com.challenge.library.model.BooksUpdateFormTest
-import com.challenge.library.service.BookManagementService
+
+import com.challenge.library.service.BookService
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
@@ -27,7 +28,7 @@ class BookControllerTest{
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    private lateinit var bookManagementService: BookManagementService
+    private lateinit var bookService: BookService
 
 
     private val booksForm= BooksFormTest.build()

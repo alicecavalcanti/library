@@ -19,9 +19,11 @@ class BookRequestDTO (
 
     @field:NotBlank
     @field:Size(min=13, max= 13 )
-    val ISBN: String,
+    val isbn: String,
 
     @field:NotEmpty
     @field:Size(min = 2, max = 100)
-    val categoria: List<String>
+    val categoria: List<String>,
+
+
 )

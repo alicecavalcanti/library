@@ -1,7 +1,6 @@
 services:
   db:
     image: mongodb/mongodb-community-server:latest
-    restart: always
     ports:
       - "27017:27017"
     environment:
@@ -11,5 +10,3 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
-
-
