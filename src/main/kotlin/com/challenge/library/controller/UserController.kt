@@ -1,7 +1,6 @@
 package com.challenge.library.controller
 
 import com.challenge.library.controller.dto.*
-import com.challenge.library.model.Book
 import com.challenge.library.model.Notification
 import com.challenge.library.model.User
 import com.challenge.library.repository.BookRepository
@@ -29,10 +28,10 @@ class UserController(
 
     @PostMapping("/createAdmin")
     fun createAdminAccount(
-        @RequestBody @Valid userRequestAdminDTO: UserRequestDTO,
+        @RequestBody @Valid userRequestAdmin: UserRequestDTO,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<User>{
-        val userCreated = userService.createAdminAccount(userRequestAdminDTO)
+        val userCreated = userService.createAdminAccount(userRequestAdmin)
         val uriUser = uriBuilder.path("/createAdmin").build().toUri()
         return ResponseEntity.created(uriUser).body(userCreated)
 
@@ -40,20 +39,20 @@ class UserController(
 
     @PostMapping("/createLibrary")
     fun createLibraryAccount(
-        @RequestBody @Valid userRequestLibraryDTO: UserRequestDTO,
+        @RequestBody @Valid userRequestLibrary: UserRequestDTO,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<User>{
-        val userCreated = userService.createLibraryAccount(userRequestLibraryDTO)
+        val userCreated = userService.createLibraryAccount(userRequestLibrary)
         val uriUser = uriBuilder.path("/createAdmin").build().toUri()
         return ResponseEntity.created(uriUser).body(userCreated)
     }
 
     @PostMapping("/createMember")
     fun createMemberAccount(
-        @RequestBody userMember: UserRequestDTO,
+        @RequestBody @Valid userRequestMember: UserRequestDTO,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<User>{
-        val userCreated = userService.createMemberAccount(userMember)
+        val userCreated = userService.createMemberAccount(userRequestMember)
         val uriUser = uriBuilder.path("/createAdmin").build().toUri()
         return ResponseEntity.created(uriUser).body(userCreated)
     }

@@ -4,7 +4,6 @@ import com.challenge.library.controller.dto.*
 import com.challenge.library.model.Loan
 import com.challenge.library.model.StatisticalReport
 import com.challenge.library.service.LoanService
-import com.challenge.library.service.StatisticalReportService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
@@ -14,7 +13,6 @@ import org.springframework.web.util.UriComponentsBuilder
 @RestController
 class LoanController(
     private val loanService: LoanService,
-    private val statisticalReportService: StatisticalReportService
 ){
     @GetMapping("/list")
     fun listAllLibraryLoans(
@@ -79,10 +77,5 @@ class LoanController(
         return ResponseEntity
             .status(200)
             .body(loanService.bookReturn(idLoan))
-    }
-
-    @GetMapping("/report")
-    fun statisticalReport(): StatisticalReport{
-        return statisticalReportService.statisticalReport()
     }
 }

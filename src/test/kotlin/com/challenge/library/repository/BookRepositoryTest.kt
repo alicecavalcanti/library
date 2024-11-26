@@ -1,29 +1,50 @@
 package com.challenge.library.repository
 
-import com.challenge.library.configuration.AbstractContainerizedMongoTest
 import com.challenge.library.data.ListBooksData
 import com.challenge.library.model.Book
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.data.domain.PageRequest
+import org.testcontainers.containers.MongoDBContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 
+@DataMongoTest
+@Testcontainers
+class BookRepositoryTest {
 
-class BookRepositoryTest : AbstractContainerizedMongoTest(){
+    companion object {
+        @JvmStatic
+        @Container
+        @ServiceConnection
+        var mongoDBContainer = MongoDBContainer("mongo:latest")
+            .withExposedPorts(27017)
+    }
 
     @Autowired
     lateinit var bookRepository: BookRepository
 
     private val listBooks = ListBooksData.build()
 
+//    companion object {
+//        @JvmStatic
+//        @AfterAll
+//        fun tearDown() {
+//            BookIntegrationTest.mongoDBContainer.stop()
+//        }
+//    }
+
     @BeforeEach
-    fun setup(){
+    fun setup() {
         bookRepository.deleteAll()
     }
 
     @Test
-    fun `deve conseguir pesquisar pelo titulo, autor, isbn ou categoria, passando um desses valores para a variável search do livro armazenado no banco`(){
+    fun `deve conseguir pesquisar pelo titulo, autor, isbn ou categoria, passando um desses valores para a variável search do livro armazenado no banco`() {
         bookRepository.saveAll(listBooks)
 
         val search = "SENHOR dos anÉis"
@@ -37,10 +58,10 @@ class BookRepositoryTest : AbstractContainerizedMongoTest(){
                 Assertions.assertThat(it[0].titulo).isEqualTo(listBooks[0].titulo)
             })
 
-     }
+    }
 
     @Test
-    fun `Não deve conseguir pesquisar pelo titulo, autor, isbn ou categoria, pois a pesquisa é feita por um livro que não está no banco`(){
+    fun `Não deve conseguir pesquisar pelo titulo, autor, isbn ou categoria, pois a pesquisa é feita por um livro que não está no banco`() {
         bookRepository.saveAll(listBooks)
 
         val search = "mouse"
@@ -50,11 +71,11 @@ class BookRepositoryTest : AbstractContainerizedMongoTest(){
     }
 
     @Test
-    fun  `Deve retornar a média das melhores notas em ordem decrescente`(){
+    fun `Deve retornar a média das melhores notas em ordem decrescente`() {
         val bestGrade = listBooks[0]
-        val secondBestGrade =listBooks[1]
-        val thirdBestGrade =listBooks[2]
-        val fourthBestGrade =listBooks[3]
+        val secondBestGrade = listBooks[1]
+        val thirdBestGrade = listBooks[2]
+        val fourthBestGrade = listBooks[3]
 
         val books = listOf(bestGrade, secondBestGrade, thirdBestGrade, fourthBestGrade)
         bookRepository.saveAll(books)
@@ -68,7 +89,7 @@ class BookRepositoryTest : AbstractContainerizedMongoTest(){
     }
 
     @Test
-    fun  `Quando pegar as melhores avaliações, então deve retornar vazio`(){
+    fun `Quando pegar as melhores avaliações, então deve retornar vazio`() {
         val book1 = Book(
             id = "1",
             titulo = "senhor dos anéis",
@@ -85,10 +106,9 @@ class BookRepositoryTest : AbstractContainerizedMongoTest(){
             isbn = "1234567891234",
             categoria = mutableListOf("ficção", "mistério")
         )
-
         val books = listOf(book1, book2)
-        bookRepository.saveAll(books)
 
+        bookRepository.saveAll(books)
         val amountBestNotes = bookRepository.findBestBookNotes()
 
         Assertions.assertThat(amountBestNotes).isEmpty()
