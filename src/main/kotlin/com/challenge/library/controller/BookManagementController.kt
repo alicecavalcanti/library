@@ -2,7 +2,9 @@ package com.challenge.library.controller
 
 import com.challenge.library.controller.dto.BookRequestDTO
 import com.challenge.library.controller.dto.BookUpdateRequestDTO
+import com.challenge.library.controller.dto.UserRequestDTO
 import com.challenge.library.model.Book
+import com.challenge.library.repository.BookRepository
 import com.challenge.library.service.BookManagementService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
@@ -18,8 +20,14 @@ import org.springframework.web.util.UriComponentsBuilder
 class BookManagementController(
     private val bookManagementService: BookManagementService,
 ) {
+    @GetMapping("/catalogo")
+    fun catalogoLivros(
+        @PageableDefault pagination: Pageable
+    ):Page<Book>{
+        return bookManagementService.listAll(pagination)
+    }
 
-    @GetMapping()
+    @GetMapping
     fun consultBook(
         @RequestParam search: String,
         @PageableDefault pagination: Pageable
@@ -31,27 +39,43 @@ class BookManagementController(
     @PostMapping
     fun registerBook(
         @RequestBody @Valid bookForm: BookRequestDTO,
-        uriBuilder: UriComponentsBuilder
-    ) : ResponseEntity<Book>{
-        val registeredBook = bookManagementService.registerBook(bookForm)
+        @RequestHeader token: String,
+        uriBuilder: UriComponentsBuilder,
+    ) : ResponseEntity<String>{
+
+        val registeredBookTrueOrFalse = bookManagementService.registerBook(bookForm, token)
+
+        if (registeredBookTrueOrFalse){
+            return ResponseEntity.status(401).body("")
+        }
 
         var uri = uriBuilder.path("/books").build().toUri()
 
-        return ResponseEntity.created(uri).body(registeredBook)
+        return ResponseEntity.created(uri).body("")
     }
 
     @PutMapping
     fun editBook(
-        @RequestBody @Valid bookForm: BookUpdateRequestDTO
-    ): Book {
-        return bookManagementService.editBook(bookForm)
+        @RequestBody @Valid bookRequestDTO: BookUpdateRequestDTO,
+        @RequestHeader token: String
+    ): ResponseEntity<String> {
+        val editYesOrNot= bookManagementService.editBook(bookRequestDTO, token)
+        if(editYesOrNot){
+           return ResponseEntity.status(200).body("")
+        }
+        return ResponseEntity.status(401).body("")
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteBook(
-        @PathVariable id: String
-    ){
-        bookManagementService.delete(id)
+        @PathVariable id: String,
+        @RequestHeader token: String
+    ): ResponseEntity<String>{
+       val deleteTrueOrFalse= bookManagementService.delete(id, token)
+       if(deleteTrueOrFalse){
+           return ResponseEntity.status(204).body("")
+       }
+        return ResponseEntity.status(401).body("")
     }
 }

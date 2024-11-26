@@ -23,5 +23,7 @@ class BookRequestDTO (
 
     @field:NotEmpty
     @field:Size(min = 2, max = 100)
-    val categoria: List<String>
+    val categoria: List<String>,
+
+
 )

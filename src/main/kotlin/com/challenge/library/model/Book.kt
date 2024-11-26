@@ -14,7 +14,8 @@ data class Book(
     var ISBN: String,
     var categoria: List<String>,
     val notas: Double?= null,
-    val resenhas: String?=null
+    val resenhas: String?=null,
+    val unauthorizedMessage: String = "unauthorized user"
 ): Serializable{
 
     fun updateWith(titulo: String, resumo: String, autor: String, ISBN: String, categoria: List<String>){

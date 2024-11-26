@@ -7,8 +7,10 @@ import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
 
 class BookUpdateRequestDTO (
-
+    @field:NotBlank
+    @Size(max = 200)
     val id: String,
+
     @field:NotBlank
     @Size(min=1, max = 100)
     val titulo: String,
