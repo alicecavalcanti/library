@@ -32,6 +32,9 @@ class LoanServiceTest {
     private lateinit var bookService: BookService
 
     @MockK
+    private lateinit var userService: UserService
+
+    @MockK
     private lateinit var loanRequestMapper: LoanRequestMapper
 
     @InjectMockKs
