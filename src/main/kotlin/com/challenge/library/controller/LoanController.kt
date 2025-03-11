@@ -18,7 +18,7 @@ class LoanController(
     fun listAllLibraryLoans(
         pagination: Pageable
     ): Page<Loan>{
-        return loanService.listAllLibraryLoans(pagination)
+        return loanService.getAllLoans(pagination)
     }
 
     @GetMapping("/list/{idUser}")
@@ -26,20 +26,16 @@ class LoanController(
         @PathVariable idUser: String,
         pagination: Pageable
     ): Page<Loan>?{
-        return loanService.listUserBookLoan(idUser, pagination)
+        return loanService.getMyBookLoans(user.id, pagination)
     }
 
-
-    @PostMapping("/register")
-    fun registerLoad(
+    @PostMapping("/request")
+    fun requestLoan(
         @RequestBody loan: LoanBookDTO,
         uriComponent: UriComponentsBuilder
     ): ResponseEntity<Loan>{
-
-        val createLoan= loanService.registerLoad(loan)
-
+        val createLoan= loanService.requestLoan(loan, user.id)
         val uri = uriComponent.path("/register").build().toUri()
-
         return ResponseEntity.created(uri).body(createLoan)
     }
 
@@ -49,33 +45,32 @@ class LoanController(
     ): ResponseEntity<Loan>{
         return ResponseEntity
                     .status(200)
-                    .body(loanService.approveLoanRequest(idLoan))
+                    .body(loanService.approveLoanRequest(loanId))
     }
 
     @PutMapping("/approve-return/{idLoan}")
     fun approveReturnRequest(
        @PathVariable idLoan: String
     ): Loan{
-        return loanService.approveReturnRequest(idLoan)
+        return loanService.approveReturnRequest(loanId)
     }
 
 
     @PutMapping("/grab/{idLoan}")
     fun grabBook(
-        @PathVariable idLoan: String
+        @PathVariable loanId: String,
     ): ResponseEntity<Loan>{
         return ResponseEntity
             .status(200)
-            .body(loanService.grabLoanBook(idLoan))
-
+            .body(loanService.grabLoanBook(loanId))
     }
 
     @PutMapping("/devolution/{idLoan}")
     fun bookReturn(
-        @PathVariable idLoan: String
+        @PathVariable loanId: String
     ): ResponseEntity<Loan>{
         return ResponseEntity
             .status(200)
-            .body(loanService.bookReturn(idLoan))
+            .body(loanService.bookReturn(loanId))
     }
 }

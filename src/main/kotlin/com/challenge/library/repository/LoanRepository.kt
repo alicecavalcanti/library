@@ -12,8 +12,8 @@ import java.time.LocalDateTime
 
 @Repository
 interface LoanRepository: MongoRepository<Loan, String> {
-    fun findAllByIdUser(idUser: String, pagination: Pageable): Page<Loan>
-    fun findAllByIdBook(id: String?): List<Loan>
+    fun findAllByUserId(userId: String, pagination: Pageable): Page<Loan>
+    fun findAllByBookId(bookId: String?): List<Loan>
 
     @Query("{'status': 'REQUESTED_LOAN'}")
     fun findLoans(pagination: Pageable): Page<Loan>

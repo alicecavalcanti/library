@@ -15,7 +15,7 @@ class NotificationService(
     private val bookService: BookService
 ) {
     fun  listAllUserNotifications(idUser: String, pagination: Pageable): Page<Notification>{
-        return notificationRepository.findAllByIdUser(idUser, pagination)
+        return notificationRepository.findAllByUserId(idUser, pagination)
     }
 
     fun createNotifyDelay(idLoan: String): Notification{

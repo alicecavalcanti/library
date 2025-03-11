@@ -43,13 +43,13 @@ class UserController(
         return ResponseEntity.created(uriUser).body(userCreated)
     }
 
-    @PostMapping("/createMember")
+    @PostMapping("/create-member")
     fun createMemberAccount(
-        @RequestBody @Valid userRequestMember: UserRequestDTO,
+        @RequestBody @Valid userRequestMember: SignUpRequestDTO,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<User>{
         val userCreated = userService.createMemberAccount(userRequestMember)
-        val uriUser = uriBuilder.path("/createAdmin").build().toUri()
+        val uriUser = uriBuilder.path("/create-member").build().toUri()
         return ResponseEntity.created(uriUser).body(userCreated)
     }
 

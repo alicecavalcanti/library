@@ -7,7 +7,6 @@ import com.challenge.library.model.Book
 import com.challenge.library.repository.BookRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -66,17 +65,15 @@ class BookService @Autowired constructor(
         bookRepository.deleteById(id)
     }
 
-    fun feedbackBookUser(
-        bookFeedbackDTO: BookFeedbackDTO
-    ): Book{
-        val book = findBookById(bookFeedbackDTO.idBook)
-        book.resenhas.add(bookFeedbackDTO.resenha)
-        book.notas.add(bookFeedbackDTO.nota)
+    fun addBookReview(
+        bookReviewDTO: BookReviewDTO
+    ): Book {
+        val book = findBookById(bookReviewDTO.idBook)
+        book.resenhas.add(bookReviewDTO.review)
         return bookRepository.save(book)
     }
 
-
-    fun bestBookNotes(): List<AverageBookGradesDTO>{
+    fun bestBookNotes(): List<AverageBookGradesDTO> {
         return bookRepository.findBestBookNotes()
     }
 }

@@ -31,8 +31,7 @@ class BookController(
         @RequestParam search: String,
         @PageableDefault pagination: Pageable
     ): Page<Book>{
-        val book = bookService.consultBook(search, pagination)
-        return book
+        return bookService.consultBook(search, pagination)
     }
 
     @PostMapping
