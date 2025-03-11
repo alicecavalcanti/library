@@ -17,7 +17,6 @@ class StatisticalReportController(
     private val bookService: BookService,
     private val statisticalReportRepository: StatisticalReportRepository
 ) {
-
     @GetMapping("/loan")
     fun generateLoanStatistics(): StatisticalReport {
         val loanStatistics = StatisticalReport(
@@ -26,7 +25,6 @@ class StatisticalReportController(
             fiveMostBorrowedBooks = loanService.fiveMostBorrowedBooks()
         )
         return statisticalReportRepository.save(loanStatistics)
-
     }
 
     @GetMapping("/user")

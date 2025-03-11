@@ -40,11 +40,8 @@ class BookController(
         @RequestBody @Valid bookForm: BookRequestDTO,
         uriBuilder: UriComponentsBuilder,
     ) : ResponseEntity<Book>{
-
         val registeredBook = bookService.registerBook(bookForm)
-
         var uri = uriBuilder.path("/books").build().toUri()
-
         return ResponseEntity.created(uri).body(registeredBook)
     }
 
@@ -53,7 +50,6 @@ class BookController(
         @RequestBody @Valid bookRequestDTO: BookUpdateRequestDTO,
     ): Book{
         return bookService.editBook(bookRequestDTO)
-
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

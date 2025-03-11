@@ -37,6 +37,4 @@ class UserRequestMapper : Mapper<UserRequestDTO, User>{
             roles = listOf(Roles.MEMBER)
         )
     }
-
-
 }

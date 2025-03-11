@@ -7,7 +7,6 @@ import com.challenge.library.model.QuantityEachTypeUsers
 import com.challenge.library.model.Roles
 import com.challenge.library.model.User
 import com.challenge.library.repository.UserRepository
-
 import org.springframework.stereotype.Service
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

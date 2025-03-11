@@ -17,10 +17,8 @@ import org.springframework.stereotype.Service
 class BookService @Autowired constructor(
     private val bookRepository: BookRepository,
     private val bookRequestMapper: BookRequestMapper,
-){
-
-
-    @Cacheable(cacheNames = ["list_book"])
+) {
+    //@Cacheable(cacheNames = ["list_book"])
     fun listAllBooksLibrary(pagination: Pageable): Page<Book> {
         return bookRepository.findAll(pagination)
     }
@@ -32,8 +30,8 @@ class BookService @Autowired constructor(
         return bookRepository.findBook(search, pagination)
     }
 
-    fun findBookById(id: String): Book{
-        return bookRepository.findById(id).orElseThrow{BookNotFoundException()}
+    fun findBookById(id: String): Book {
+        return bookRepository.findById(id).orElseThrow { BookNotFoundException() }
     }
 
     @CacheEvict(cacheNames = ["book_register"], allEntries = true)
@@ -47,17 +45,15 @@ class BookService @Autowired constructor(
     @CacheEvict(cacheNames = ["book_edit"], allEntries = true)
     fun editBook(
         bookRequestDTO: BookUpdateRequestDTO,
-    ): Book{
-
+    ): Book {
         val book = findBookById(bookRequestDTO.id)
         book.updateWith(
-        bookRequestDTO.titulo,
-        bookRequestDTO.resumo,
-        bookRequestDTO.autor,
-        bookRequestDTO.isbn,
-        bookRequestDTO.categoria
+            bookRequestDTO.titulo,
+            bookRequestDTO.resumo,
+            bookRequestDTO.autor,
+            bookRequestDTO.isbn,
+            bookRequestDTO.categoria
         )
-
         bookRepository.save(book)
         return book
     }
@@ -65,7 +61,8 @@ class BookService @Autowired constructor(
     @CacheEvict(cacheNames = ["book_delete"], allEntries = true)
     fun delete(
         id: String,
-    ){
+    ) {
+        findBookById(id)
         bookRepository.deleteById(id)
     }
 

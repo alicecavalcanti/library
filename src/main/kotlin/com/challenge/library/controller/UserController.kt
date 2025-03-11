@@ -3,10 +3,6 @@ package com.challenge.library.controller
 import com.challenge.library.controller.dto.*
 import com.challenge.library.model.Notification
 import com.challenge.library.model.User
-import com.challenge.library.repository.BookRepository
-import com.challenge.library.repository.LoanRepository
-import com.challenge.library.service.BookService
-import com.challenge.library.service.LoanService
 import com.challenge.library.service.NotificationService
 import com.challenge.library.service.UserService
 import jakarta.validation.Valid
@@ -70,5 +66,4 @@ class UserController(
     ): Notification {
         return notificationService.createNotifyDelay(idLoan)
     }
-
 }
