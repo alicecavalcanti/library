@@ -76,4 +76,10 @@ class BookService @Autowired constructor(
     fun bestBookNotes(): List<AverageBookGradesDTO> {
         return bookRepository.findBestBookNotes()
     }
+
+    fun addBookRating(bookRatingDTO: BookRatingDTO): Book {
+        val book = findBookById(bookRatingDTO.idBook)
+        book.notas.add(bookRatingDTO.rating)
+        return bookRepository.save(book)
+    }
 }

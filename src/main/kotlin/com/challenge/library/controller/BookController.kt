@@ -1,6 +1,8 @@
 package com.challenge.library.controller
 
-import com.challenge.library.controller.dto.BookFeedbackDTO
+import com.challenge.library.configuration.security.UserAuthenticationPrincipal
+import com.challenge.library.controller.dto.BookRatingDTO
+import com.challenge.library.controller.dto.BookReviewDTO
 import com.challenge.library.controller.dto.BookRequestDTO
 import com.challenge.library.controller.dto.BookUpdateRequestDTO
 import com.challenge.library.model.Book
@@ -59,9 +61,17 @@ class BookController(
         bookService.delete(id)
     }
 
-    @PostMapping("/feedback-book")
-    fun feedbackBookUser(@RequestBody @Valid bookFeedbackDTO: BookFeedbackDTO): Book {
-        return bookService.feedbackBookUser(bookFeedbackDTO)
+    @PostMapping("/review")
+    fun submitReview(
+        @RequestBody @Valid bookReviewDTO: BookReviewDTO
+    ): Book {
+        return bookService.addBookReview(bookReviewDTO)
     }
 
+    @PostMapping("/rating")
+    fun submitRating(
+        @RequestBody @Valid bookRatingDTO: BookRatingDTO
+    ): Book{
+        return bookService.addBookRating(bookRatingDTO)
+    }
 }
