@@ -8,8 +8,9 @@ import java.time.LocalDate
 data class User(
     @Id
     val id: String?=null,
+    val name: String,
     val username: String,
-    val password: String,
+    var password: String,
     val registrationDate: LocalDate?=null,
     val roles: List<Roles>
 )

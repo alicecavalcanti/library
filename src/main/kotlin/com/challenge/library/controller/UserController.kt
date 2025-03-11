@@ -21,25 +21,14 @@ class UserController(
     private val bookRepository: BookRepository,
     private val bookService: BookService
 ){
-
-    @PostMapping("/createAdmin")
-    fun createAdminAccount(
-        @RequestBody @Valid userRequestAdmin: UserRequestDTO,
+    @PostMapping("/create-privileged-user")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    fun createPrivilegedUser(
+        @RequestBody userRequestAdmin: SignUpRequestDTO,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<User>{
-        val userCreated = userService.createAdminAccount(userRequestAdmin)
-        val uriUser = uriBuilder.path("/createAdmin").build().toUri()
-        return ResponseEntity.created(uriUser).body(userCreated)
-
-    }
-
-    @PostMapping("/createLibrary")
-    fun createLibraryAccount(
-        @RequestBody @Valid userRequestLibrary: UserRequestDTO,
-        uriBuilder: UriComponentsBuilder
-    ): ResponseEntity<User>{
-        val userCreated = userService.createLibraryAccount(userRequestLibrary)
-        val uriUser = uriBuilder.path("/createAdmin").build().toUri()
+        val userCreated = userService.createPrivilegedUser(userRequestAdmin)
+        val uriUser = uriBuilder.path("/create-privileged-user").build().toUri()
         return ResponseEntity.created(uriUser).body(userCreated)
     }
 
