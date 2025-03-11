@@ -16,8 +16,8 @@ import java.time.LocalTime
 class LoanService (
     private val loanRepository: LoanRepository,
     private val bookService: BookService,
-    private val userService: UserService,
-    private val loanRequestMapper: LoanRequestMapper
+    private val loanRequestMapper: LoanRequestMapper,
+    private val notificationService: NotificationService
 ){
     fun getAllLoans(pagination: Pageable): Page<Loan> {
         return loanRepository.findLoans(pagination)
@@ -52,6 +52,9 @@ class LoanService (
     fun approveReturnRequest(idLoan: String): Loan {
         val loanFound = findLoanById(idLoan)
         if (!loanFound.approveReturn()) throw NotRequestedReturnLoanException()
+        loanFound.takeUnless { it.isReturnOnTime(it.userReturnDate!!) }?.let {
+            notificationService.createNotifyDelay(it.userId, it.bookId)
+        }
         return loanRepository.save(loanFound)
     }
 
