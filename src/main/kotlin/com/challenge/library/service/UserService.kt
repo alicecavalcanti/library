@@ -1,7 +1,7 @@
 package com.challenge.library.service
 
 import com.challenge.library.controller.dto.*
-import com.challenge.library.exception.ActionNotAllowedException
+import com.challenge.library.exception.UserCreationNotAllowedException
 import com.challenge.library.exception.UserNotFoundException
 import com.challenge.library.mapper.UserRequestMapper
 import com.challenge.library.model.QuantityEachTypeUsers
@@ -29,7 +29,7 @@ class UserService(
     fun createMemberAccount(userMember: SignUpRequestDTO): User {
         val userMemberMapper = userRequestMapper.map(userMember)
         if (userMemberMapper.roles.any { it != Roles.MEMBER }){
-            throw ActionNotAllowedException()
+            throw UserCreationNotAllowedException()
         }
         userMemberMapper.password = BCryptPasswordEncoder().encode(userMemberMapper.password)
         return userRepository.save(userMemberMapper)
