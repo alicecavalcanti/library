@@ -13,5 +13,5 @@ interface UserRepository : MongoRepository<User, String>{
     fun findByRoles(roles: List<Roles>): List<User>
     @Query("{ \$expr: { \$eq: [ { \$month: '\$registrationDate' }, ?0 ] } }")
     fun findAllLoanDate(month: Int): List<User>
-
+    fun findByUsername(username: String?): User
 }

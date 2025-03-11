@@ -1,5 +1,6 @@
 package com.challenge.library.service
 
+import com.challenge.library.configuration.UserAuthenticationDetails
 import com.challenge.library.controller.dto.*
 import com.challenge.library.exception.UserCreationNotAllowedException
 import com.challenge.library.exception.UserNotFoundException
@@ -55,4 +56,14 @@ class UserService(
         return UserGrowthDTO(month = lastMonth.month, userGrowth = numberUsersMonth)
     }
 
+    override fun loadUserByUsername(username: String?): UserAuthenticationDetails {
+        val user = userRepository.findByUsername(username)
+        return UserAuthenticationDetails(
+            id = user.id!!,
+            username = user.username,
+            name = user.name,
+            password = user.password,
+            authorities = user.roles.map { GrantedAuthority({ it.name }) }.toSet()
+        )
+    }
 }
