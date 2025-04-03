@@ -5,6 +5,7 @@ import com.challenge.library.repository.StatisticalReportRepository
 import com.challenge.library.service.BookService
 import com.challenge.library.service.LoanService
 import com.challenge.library.service.UserService
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -17,8 +18,8 @@ class StatisticalReportController(
     private val bookService: BookService,
     private val statisticalReportRepository: StatisticalReportRepository
 ) {
-
     @GetMapping("/loan")
+    @PreAuthorize("hasAuthority('ADMIN')")
     fun generateLoanStatistics(): StatisticalReport {
         val loanStatistics = StatisticalReport(
             totalLoansMonth = loanService.findAllLoanMonth(),
@@ -26,10 +27,10 @@ class StatisticalReportController(
             fiveMostBorrowedBooks = loanService.fiveMostBorrowedBooks()
         )
         return statisticalReportRepository.save(loanStatistics)
-
     }
 
     @GetMapping("/user")
+    @PreAuthorize("hasAuthority('ADMIN')")
     fun generateUserStatistics(): StatisticalReport {
         val userStatistics = StatisticalReport(
             totalNumberQuantityEachTypeUsers = userService.totalNumberUsers(),
@@ -39,6 +40,7 @@ class StatisticalReportController(
     }
 
     @GetMapping("/book")
+    @PreAuthorize("hasAuthority('ADMIN')")
     fun generateBookStatistics(): StatisticalReport {
         val bookStatistics = StatisticalReport(
             bestBookNotes = bookService.bestBookNotes()

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface NotificationRepository: MongoRepository<Notification, String> {
-    fun findAllByIdUser(idUser: String, pagination: Pageable): Page<Notification>
+    fun findAllByUserId(userId: String, pagination: Pageable): Page<Notification>
 }

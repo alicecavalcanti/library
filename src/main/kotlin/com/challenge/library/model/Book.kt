@@ -17,7 +17,7 @@ data class Book(
     var resenhas: MutableList<String> = mutableListOf()
 ): Serializable{
 
-    fun updateWith(titulo: String, resumo: String, autor: String, ISBN: String, categoria: List<String>){
+    fun updateWith(titulo: String, resumo: String, autor: String, isbn: String, categoria: List<String>){
         this.titulo = titulo
         this.resumo = resumo
         this.autor = autor

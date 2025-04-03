@@ -10,8 +10,8 @@ import java.time.LocalDate
 class LoanRequestMapper : Mapper<LoanBookDTO, Loan>{
     override fun map(t: LoanBookDTO): Loan {
         return Loan(
-            idBook = t.idBook,
-            idUser = t.idUser,
+            bookId = t.bookId,
+            userId = t.userId!!,
             status = LoanStatus.REQUESTED_LOAN,
             loanDate = LocalDate.now(),
             expectedReturnDate = t.expectedReturnDate

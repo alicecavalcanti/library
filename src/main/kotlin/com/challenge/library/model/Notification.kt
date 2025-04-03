@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class Notification (
     @Id
     val id: String?=null,
-    val idUser: String,
-    val mensagem: String
+    val userId: String,
+    val message: String
 )

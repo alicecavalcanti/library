@@ -1,7 +1,5 @@
 package com.challenge.library.model
 
-import jakarta.validation.constraints.NotEmpty
-import jakarta.validation.constraints.Size
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
@@ -10,8 +8,9 @@ import java.time.LocalDate
 data class User(
     @Id
     val id: String?=null,
+    val name: String,
     val username: String,
-    val password: String,
+    var password: String,
     val registrationDate: LocalDate?=null,
     val roles: List<Roles>
 )

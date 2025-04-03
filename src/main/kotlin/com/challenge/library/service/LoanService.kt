@@ -16,32 +16,30 @@ import java.time.LocalTime
 class LoanService (
     private val loanRepository: LoanRepository,
     private val bookService: BookService,
-    private val userService: UserService,
-    private val loanRequestMapper: LoanRequestMapper
+    private val loanRequestMapper: LoanRequestMapper,
+    private val notificationService: NotificationService
 ){
-
-    fun listAllLibraryLoans(pagination: Pageable): Page<Loan> {
+    fun getAllLoans(pagination: Pageable): Page<Loan> {
         return loanRepository.findLoans(pagination)
     }
 
-    fun listUserBookLoan(
-        idUser: String,
+    fun getMyBookLoans(
+        userId: String,
         pagination: Pageable
     ): Page<Loan>? {
-        val user = userService.findUserById(idUser)
-        return loanRepository.findAllByIdUser(user.id!!, pagination)
+        return loanRepository.findAllByUserId(userId, pagination)
     }
 
     fun findLoanById(idLoan: String): Loan {
         return loanRepository.findById(idLoan).orElseThrow{ LoanNotFoundException() }
     }
 
-
-    fun registerLoad(loanBookDTO: LoanBookDTO) : Loan {
-        val book = bookService.findBookById(loanBookDTO.idBook)
-        val listLoansFound = loanRepository.findAllByIdBook(book.id)
-        if(listLoansFound.any{ it.isLoanNotReturned()}) throw BookAlreadyRequestedException()
-        val loanCreate= loanRequestMapper.map(loanBookDTO)
+    fun requestLoan(loanBookDTO: LoanBookDTO, userId: String): Loan {
+        val book = bookService.findBookById(loanBookDTO.bookId)
+        val listLoansFound = loanRepository.findAllByBookId(book.id)
+        if (listLoansFound.any { it.isLoanNotReturned() }) throw BookAlreadyRequestedException()
+        loanBookDTO.userId = userId
+        val loanCreate = loanRequestMapper.map(loanBookDTO)
         return loanRepository.save(loanCreate)
     }
 
@@ -52,13 +50,16 @@ class LoanService (
     }
 
     fun approveReturnRequest(idLoan: String): Loan {
-        val loanFound= findLoanById(idLoan)
+        val loanFound = findLoanById(idLoan)
         if (!loanFound.approveReturn()) throw NotRequestedReturnLoanException()
+        loanFound.takeUnless { it.isReturnOnTime(it.userReturnDate!!) }?.let {
+            notificationService.createNotifyDelay(it.userId, it.bookId)
+        }
         return loanRepository.save(loanFound)
     }
 
-    fun grabLoanBook(idLoan: String) : Loan{
-        val loanFound= findLoanById(idLoan)
+    fun grabLoanBook(idLoan: String): Loan {
+        val loanFound = findLoanById(idLoan)
         if (!loanFound.grabBook()) throw NotCheckedOutLoanException()
         loanRepository.save(loanFound)
         return loanFound
@@ -68,7 +69,7 @@ class LoanService (
         idLoan: String
     ): Loan{
         val loanFound = findLoanById(idLoan)
-        if (!loanFound.requestbookReturn()) throw NotRequestedReturnLoanException()
+        if (!loanFound.requestBookReturn()) throw NotRequestedReturnLoanException()
         return loanRepository.save(loanFound)
     }
 
@@ -97,5 +98,4 @@ class LoanService (
             )
         )
     }
-
 }
