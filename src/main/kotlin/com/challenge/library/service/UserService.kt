@@ -1,6 +1,5 @@
 package com.challenge.library.service
 
-import com.challenge.library.configuration.UserAuthenticationDetails
 import com.challenge.library.controller.dto.*
 import com.challenge.library.exception.UserCreationNotAllowedException
 import com.challenge.library.exception.UserNotFoundException
@@ -20,7 +19,7 @@ import java.time.LocalDate
 class UserService(
     private val userRequestMapper: UserRequestMapper,
     private val userRepository: UserRepository
-): UserDetailsService{
+){
     fun createPrivilegedUser(privilegedUser: SignUpRequestDTO) : User {
         val privilegedUserMapper = userRequestMapper.map(privilegedUser)
         privilegedUserMapper.password = BCryptPasswordEncoder().encode(privilegedUserMapper.password)
@@ -54,16 +53,5 @@ class UserService(
         val lastMonth= LocalDate.now().minusMonths(1)
         val numberUsersMonth=userRepository.findAllLoanDate(lastMonth.monthValue).size
         return UserGrowthDTO(month = lastMonth.month, userGrowth = numberUsersMonth)
-    }
-
-    override fun loadUserByUsername(username: String?): UserAuthenticationDetails {
-        val user = userRepository.findByUsername(username)
-        return UserAuthenticationDetails(
-            id = user.id!!,
-            username = user.username,
-            name = user.name,
-            password = user.password,
-            authorities = user.roles.map { GrantedAuthority({ it.name }) }.toSet()
-        )
     }
 }

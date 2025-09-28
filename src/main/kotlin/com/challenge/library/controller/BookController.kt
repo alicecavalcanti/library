@@ -40,7 +40,7 @@ class BookController(
     }
 
     @PostMapping
-    @PreAuthorize("hasPermission(#user.id, '${ResourcePermission.RESOURCE_BOOK}', '${ResourcePermission.ACTION_CREATE}')")
+    @PreAuthorize("hasPermission('${ResourcePermission.RESOURCE_BOOK}', '${ResourcePermission.ACTION_CREATE}')")
     fun registerBook(
         @RequestBody @Valid bookForm: BookRequestDTO,
         @AuthenticationPrincipal user : UserAuthenticationPrincipal,

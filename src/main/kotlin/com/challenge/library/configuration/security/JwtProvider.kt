@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTCreationException
 import com.auth0.jwt.exceptions.JWTVerificationException
+import com.challenge.library.service.OauthService
 import com.challenge.library.service.UserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -16,7 +17,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @Component
-class JwtProvider(val userService: UserService) {
+class JwtProvider(val oauthService: OauthService) {
 
     @Value("\${security.token.secret}")
     private lateinit var secret: String
@@ -53,7 +54,7 @@ class JwtProvider(val userService: UserService) {
 
     fun getAuthentication(jwt: String): Authentication {
         val username = validateToken(jwt)
-        val user = userService.loadUserByUsername(username)
+        val user = oauthService.loadUserByUsername(username)
         val userPrincipal = UserAuthenticationPrincipal(
             id = user.id,
             name = user.name,

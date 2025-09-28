@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
-class SecurityConfiguration(private val jwtUtil:JwtProvider, private val libraryAuthorizationService: LibraryAuthorizationService) {
+class SecurityConfiguration(private val jwtUtil: JwtProvider, private val libraryAuthorizationService: LibraryAuthorizationService) {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
